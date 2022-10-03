@@ -1,7 +1,7 @@
 import axios from "axios";
 import express from "express";
 import * as cheerio from "cheerio";
-import fs from fs;
+import * as fs from "fs";
 
 const app = express();
 const PORT = 4000;
@@ -205,7 +205,7 @@ async function scrapeTruckItem() {
 
 async function saveAsJson() {
     let datas = JSON.stringify(truckItems);
-    fs.writeFileSync('truckdetails.json', datas);
+    fs.writeFileSync("truckdetails.json", datas);
     console.log("Saved as truckItems.json");
 }
 
