@@ -35,6 +35,10 @@ var truckItems = [];
 var totalPages = 0;
 var currentPageNo = 1;
 
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function getNextPageUrl() {
     if (currentPageNo === 1) {
         currentPageNo++;
@@ -72,6 +76,7 @@ async function addItems() {
             console.log("Getting Items from page = " + i);
             const URL = await getNextPageUrl();
             const htmlResponse = await axios.get(URL);
+            await sleep(3000);
             console.log(`${URL} \n Status: ${htmlResponse.status}`);
             const $ = cheerio.load(htmlResponse.data);
 
