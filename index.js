@@ -1,10 +1,6 @@
 import axios from "axios";
-import express from "express";
 import * as cheerio from "cheerio";
 import * as fs from "fs";
-
-const app = express();
-const PORT = 4000;
 
 const URL = `https://www.otomoto.pl/ciezarowe/uzytkowe/mercedes-benz/ od-2014/q-actros? 
 search%5Bfilter_enum_damaged%5D=0&search%5Border%5D=created_at %3Adesc`;
@@ -206,5 +202,3 @@ await addItems();
 getTotalAdsCount(true);
 await scrapeTruckItem();
 await saveAsJson();
-
-app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
