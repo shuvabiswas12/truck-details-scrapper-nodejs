@@ -39,7 +39,7 @@ var truckItems = [];
 var totalPages = 0;
 var currentPageNo = 1;
 
-function getNextPageUrl() {
+async function getNextPageUrl() {
     if (currentPageNo === 1) {
         currentPageNo++;
         return URL;
@@ -73,12 +73,11 @@ async function addItems() {
     try {
         console.log("Items adding has started! \n");
         for (let i = 1; i < totalPages + 1; i++) {
-            const htmlResponse = await axios.get(getNextPageUrl());
-            const $ = cheerio.load(htmlResponse.data, {
-                xml: {
-                    normalizeWhitespace: true,
-                },
-            });
+            console.log("Getting Items from page = " + i);
+            const URL = await getNextPageUrl();
+            const htmlResponse = await axios.get(URL);
+            console.log(`${URL} \n Status: ${htmlResponse.status}`);
+            const $ = cheerio.load(htmlResponse.data);
 
             // Get Items from each pages
             $(`main[data-testid='search-results']`)
@@ -93,8 +92,6 @@ async function addItems() {
                     items.push(item);
                     console.log(item);
                 });
-
-            console.log("Counter = " + i);
         }
     } catch (e) {
         console.log("Error Occured!");
@@ -112,14 +109,10 @@ async function scrapeTruckItem() {
     console.log("Start scraping truck item. \n");
     const itemsLength = items.length;
     for (let i = 0; i < itemsLength; i++) {
-        console.log(`countering Item No.: ${i} / ${itemsLength} \n`);
+        console.log(`countering Item No.: ${i + 1} / ${itemsLength} \n`);
         try {
             const htmlResponse = await axios.get(items[i].itemUrl);
-            const $ = cheerio.load(htmlResponse.data, {
-                xml: {
-                    normalizeWhitespace: true,
-                },
-            });
+            const $ = cheerio.load(htmlResponse.data);
 
             let title = "",
                 currency = "",
@@ -197,8 +190,7 @@ async function scrapeTruckItem() {
             truckItems.push(truckItem);
             console.log(truckItem);
         } catch (e) {
-            console.log(e);
-            console.log("Error occured on scrapetruchItem().");
+            console.log(`Page Error on counter ${i}! \nPage URL: ${items[i].itemUrl}`);
         }
     }
 }
@@ -211,7 +203,7 @@ async function saveAsJson() {
 
 await setTotalPages();
 await addItems();
-await getTotalAdsCount(true);
+getTotalAdsCount(true);
 await scrapeTruckItem();
 await saveAsJson();
 
